@@ -2,8 +2,10 @@ package com.mtgjson.app;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 class Legalities {
 	@JsonProperty("alchemy")
      String alchemy;
