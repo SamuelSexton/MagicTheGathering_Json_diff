@@ -22,10 +22,10 @@ public class Card {
 	List<String> keywords = new ArrayList<String>();
 	
 	@JsonProperty("leadershipSkills")
-	LeadershipSkills LeadershipSkills = new LeadershipSkills();
+	LeadershipSkills leadershipSkills = new LeadershipSkills();
 	
 	@JsonProperty("legalities")
-	Legalities Legalities = new Legalities();
+	Legalities legalities = new Legalities();
 	
 	@JsonProperty("loyalty")
 	String loyalty;
@@ -117,19 +117,19 @@ public class Card {
 	}
 
 	public LeadershipSkills getLeadershipSkills() {
-		return LeadershipSkills;
+		return leadershipSkills;
 	}
 
 	public void setLeadershipSkills(LeadershipSkills leadershipSkills) {
-		LeadershipSkills = leadershipSkills;
+		leadershipSkills = leadershipSkills;
 	}
 
 	public Legalities getLegalities() {
-		return Legalities;
+		return legalities;
 	}
 
 	public void setLegalities(Legalities legalities) {
-		Legalities = legalities;
+		legalities = legalities;
 	}
 
 	public String getLoyalty() {
@@ -286,7 +286,7 @@ public class Card {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(LeadershipSkills, Legalities, colors, defense, identifiers, keywords, loyalty, manaCost,
+		return Objects.hash(leadershipSkills, legalities, colors, defense, identifiers, keywords, loyalty, manaCost,
 				manaValue, name, originalText, originalType, power, purchaseUrls, rarity, rulings, setCode, side,
 				subTypes, superTypes, text, toughness, type, types, uuid);
 	}
@@ -300,7 +300,7 @@ public class Card {
 		if (getClass() != obj.getClass())
 			return false;
 		Card other = (Card) obj;
-		return Objects.equals(LeadershipSkills, other.LeadershipSkills) && Objects.equals(Legalities, other.Legalities)
+		return Objects.equals(leadershipSkills, other.leadershipSkills) && Objects.equals(legalities, other.legalities)
 				&& Objects.equals(colors, other.colors) && Objects.equals(defense, other.defense)
 				&& Objects.equals(identifiers, other.identifiers) && Objects.equals(keywords, other.keywords)
 				&& Objects.equals(loyalty, other.loyalty) && Objects.equals(manaCost, other.manaCost)
