@@ -12,7 +12,10 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ComparisonUtils {
-	//Returns a list of file differences, essentially new Sets that have been added
+	/*
+	 * Returns a list of file differences, essentially new Sets that have been added
+	 * Used for excluding files when looping through the directory
+	*/
 	public static List<String> findNewSetFiles(String[] newSets, String[] oldSets) {
 		Set<String> setsNew = new HashSet<String>(Arrays.asList(newSets));
 		Set<String> setsOld= new HashSet<String>(Arrays.asList(oldSets));
@@ -70,17 +73,23 @@ public class ComparisonUtils {
 		return findCardChanges(mutualCards, oldCardData.getCards());
 	}
 	
+	//Return a List of properties of a Card object
+	//Used for the purpose of checking property values of a Card from the new set against the Old set
 	public static List<String> getPropertyNames(Class<?> clazz) {
         List<String> propertyNames = new ArrayList<>();
-        Field[] fields = clazz.getDeclaredFields(); // Get declared fields
+        Field[] fields = clazz.getDeclaredFields();
 
         for (Field field : fields) {
-            propertyNames.add(field.getName()); // Add field name to the list
+            propertyNames.add(field.getName()); 
         }
         
         return propertyNames;
     }
 	
+	/*
+	 *This method returns a hash map containing a card uuid and a list of properties that changed from the old set
+	 *to the new set 
+	 */
 	public static Map<String, List<String>> returnDiscrepancies(Data newCardData, Data oldCardData) {
 		Map<String, List<String>> setDiffs = new HashMap();
 		List<Card> cardDiff = findCardDiffs(newCardData, oldCardData);
@@ -106,84 +115,89 @@ public class ComparisonUtils {
 		return setDiffs;
 	}
 	
+	
+	/*
+	 * Returns True or False against the value of a Card property from the new set is equal to the value of a
+	 * Card property from the old set
+	*/ 
 	public static boolean hasPropChanged(Card newCard, Card oldCard, String prop) {
 	    boolean propBool;
 
 	    switch (prop) {
 	        case "colors":
-	            propBool = safeEquals(newCard.colors, oldCard.colors);
+	            propBool = nullEqualsCheck(newCard.colors, oldCard.colors);
 	            break;
 	        case "defense":
-	            propBool = safeEquals(newCard.defense, oldCard.defense);
+	            propBool = nullEqualsCheck(newCard.defense, oldCard.defense);
 	            break;
 	        case "identifiers":
-	            propBool = safeEquals(newCard.identifiers, oldCard.identifiers);
+	            propBool = nullEqualsCheck(newCard.identifiers, oldCard.identifiers);
 	            break;
 	        case "keywords":
-	            propBool = safeEquals(newCard.keywords, oldCard.keywords);
+	            propBool = nullEqualsCheck(newCard.keywords, oldCard.keywords);
 	            break;
 	        case "leadershipSkills":
-	            propBool = safeEquals(newCard.leadershipSkills, oldCard.leadershipSkills);
+	            propBool = nullEqualsCheck(newCard.leadershipSkills, oldCard.leadershipSkills);
 	            break;
 	        case "legalities":
-	            propBool = safeEquals(newCard.legalities, oldCard.legalities);
+	            propBool = nullEqualsCheck(newCard.legalities, oldCard.legalities);
 	            break;
 	        case "loyalty":
-	            propBool = safeEquals(newCard.loyalty, oldCard.loyalty);
+	            propBool = nullEqualsCheck(newCard.loyalty, oldCard.loyalty);
 	            break;
 	        case "manaCost":
-	            propBool = safeEquals(newCard.manaCost, oldCard.manaCost);
+	            propBool = nullEqualsCheck(newCard.manaCost, oldCard.manaCost);
 	            break;
 	        case "manaValue":
 	            propBool = newCard.manaValue == oldCard.manaValue;
 	            break;
 	        case "name":
-	            propBool = safeEquals(newCard.name, oldCard.name);
+	            propBool = nullEqualsCheck(newCard.name, oldCard.name);
 	            break;
 	        case "originalText":
-	            propBool = safeEquals(newCard.originalText, oldCard.originalText);
+	            propBool = nullEqualsCheck(newCard.originalText, oldCard.originalText);
 	            break;
 	        case "originalType":
-	            propBool = safeEquals(newCard.originalType, oldCard.originalType);
+	            propBool = nullEqualsCheck(newCard.originalType, oldCard.originalType);
 	            break;
 	        case "power":
-	            propBool = safeEquals(newCard.power, oldCard.power);
+	            propBool = nullEqualsCheck(newCard.power, oldCard.power);
 	            break;
 	        case "purchaseUrls":
-	            propBool = safeEquals(newCard.purchaseUrls, oldCard.purchaseUrls);
+	            propBool = nullEqualsCheck(newCard.purchaseUrls, oldCard.purchaseUrls);
 	            break;
 	        case "rarity":
-	            propBool = safeEquals(newCard.rarity, oldCard.rarity);
+	            propBool = nullEqualsCheck(newCard.rarity, oldCard.rarity);
 	            break;
 	        case "rulings":
-	            propBool = safeEquals(newCard.rulings, oldCard.rulings);
+	            propBool = nullEqualsCheck(newCard.rulings, oldCard.rulings);
 	            break;
 	        case "setCode":
-	            propBool = safeEquals(newCard.setCode, oldCard.setCode);
+	            propBool = nullEqualsCheck(newCard.setCode, oldCard.setCode);
 	            break;
 	        case "side":
-	            propBool = safeEquals(newCard.side, oldCard.side);
+	            propBool = nullEqualsCheck(newCard.side, oldCard.side);
 	            break;
 	        case "subTypes":
-	            propBool = safeEquals(newCard.subTypes, oldCard.subTypes);
+	            propBool = nullEqualsCheck(newCard.subTypes, oldCard.subTypes);
 	            break;
 	        case "superTypes":
-	            propBool = safeEquals(newCard.superTypes, oldCard.superTypes);
+	            propBool = nullEqualsCheck(newCard.superTypes, oldCard.superTypes);
 	            break;
 	        case "text":
-	            propBool = safeEquals(newCard.text, oldCard.text);
+	            propBool = nullEqualsCheck(newCard.text, oldCard.text);
 	            break;
 	        case "toughness":
-	            propBool = safeEquals(newCard.toughness, oldCard.toughness);
+	            propBool = nullEqualsCheck(newCard.toughness, oldCard.toughness);
 	            break;
 	        case "type":
-	            propBool = safeEquals(newCard.type, oldCard.type);
+	            propBool = nullEqualsCheck(newCard.type, oldCard.type);
 	            break;
 	        case "types":
-	            propBool = safeEquals(newCard.type, oldCard.type);
+	            propBool = nullEqualsCheck(newCard.type, oldCard.type);
 	            break;
 	        case "uuid":
-	            propBool = safeEquals(newCard.uuid, oldCard.uuid);
+	            propBool = nullEqualsCheck(newCard.uuid, oldCard.uuid);
 	            break;
 	        default: 
 	            throw new IllegalArgumentException("Invalid property name: " + prop);
@@ -192,7 +206,8 @@ public class ComparisonUtils {
 	    return propBool;
 	}
 	
-	private static boolean safeEquals(Object a, Object b) {
+	//Checks for null values and checks for equality when not null
+	private static boolean nullEqualsCheck(Object a, Object b) {
 	    return (a == null) ? (b == null) : a.equals(b);
 	}
 }
