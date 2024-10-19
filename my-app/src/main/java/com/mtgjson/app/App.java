@@ -1,25 +1,22 @@
 package com.mtgjson.app;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.Instant;
+
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mtgjson.app.ComparisonUtils;
 
 public class App {
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-		//String pathToNewFile = "src/main/resources/AllSetsNew/M3C.json";
-		//String pathToOldFile = "src/main/resources/AllSetsOld/M3C.json";
-		//File newFile = new File(pathToNewFile);
-		//File oldFile = new File(pathToOldFile);
-		 
+		Instant start = Instant.now();
 		List<String> diffs = new ArrayList<String>();
 		String pathToNewDir = "src/main/resources/AllSetsNew/";
 		String pathToOldDir = "src/main/resources/AllSetsOld/";
@@ -29,12 +26,12 @@ public class App {
 		
 		diffs = ComparisonUtils.findNewSetFiles(newDir.list(), oldDir.list());
 		ObjectMapper objectMapper = new ObjectMapper();
-		Map<String, Map<String, List<String>>> jsonDiff = new HashMap();
+		Map<String, Map<String, List<String>>> jsonDiff = new HashMap<String,Map<String,List<String>>>();
+		CardDiffs jsonDiffs = new CardDiffs();
 		for(String file : newDir.list()) {
 			if(diffs.contains(file)) {
 				continue;
 			}
-			
 			try{
 				File newFile = new File(pathToNewDir + file);
 				File oldFile = new File(pathToOldDir + file);
@@ -42,14 +39,32 @@ public class App {
 				Set oldSet = objectMapper.readValue(oldFile, Set.class);
 				
 				Map<String,List<String>> setDiffs = ComparisonUtils.returnDiscrepancies(newSet.getData(), oldSet.getData());
-				jsonDiff.put(file, setDiffs);
-			}catch(IOException e){
+				List<String> newCards = ComparisonUtils.findNewUuids(newSet.getData().getUuids(), oldSet.getData().getUuids());
+				List<String> removeCards = ComparisonUtils.removeSetCards(newSet.getData().getUuids(),oldSet.getData().getUuids());
+				if(!newCards.isEmpty()) {
+					jsonDiffs.addAdditions(file, newCards);
+				}
+				if(!removeCards.isEmpty()) {
+					jsonDiffs.addRemovals(file, removeCards);
+				}
+				if(setDiffs.isEmpty()) {
+					continue;
+				}
+				jsonDiff.put(file + " / " +oldSet.meta.getDate() + "->" + newSet.meta.getDate(), setDiffs);
+				jsonDiffs.addChanges(file, setDiffs);
+			}catch(FileNotFoundException e){
+				System.out.println("This file doesn't exist: " + e.getMessage());
+			}catch(IOException e) {
 				System.out.println("An error occurred while reading the file: " + e.getMessage());
 			}
 		}
+		
 		File file = new File("output.json");
-		objectMapper.writerWithDefaultPrettyPrinter().writeValue(file,jsonDiff);
+		objectMapper.writerWithDefaultPrettyPrinter().writeValue(file,jsonDiffs);
+		Instant end = Instant.now();
+		Duration time = Duration.between(start, end);
 		System.out.println("File written to: " + file.getAbsolutePath());
+		System.out.println("Time for program execution: "+ time.toMillis());
 	}
 	
 	

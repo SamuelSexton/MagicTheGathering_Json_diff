@@ -13,9 +13,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ComparisonUtils {
 	/*
-	 * Returns a list of file differences, essentially new Sets that have been added
-	 * Used for excluding files when looping through the directory
-	*/
+	 * All methods inside this class are with the purpose of determining the differences in the
+	 * field name values of the MTGJSON JSON files.  Specifically the comparisons are done from the
+	 * JSON files inside the AllSetFiles. This program is essentially
+	 */
+	
+	 //Returns a list of file differences, essentially new Sets that have been added
+	 //Used for excluding files when looping through the directory
 	public static List<String> findNewSetFiles(String[] newSets, String[] oldSets) {
 		Set<String> setsNew = new HashSet<String>(Arrays.asList(newSets));
 		Set<String> setsOld= new HashSet<String>(Arrays.asList(oldSets));
@@ -82,7 +86,6 @@ public class ComparisonUtils {
         for (Field field : fields) {
             propertyNames.add(field.getName()); 
         }
-        
         return propertyNames;
     }
 	
@@ -91,18 +94,18 @@ public class ComparisonUtils {
 	 *to the new set 
 	 */
 	public static Map<String, List<String>> returnDiscrepancies(Data newCardData, Data oldCardData) {
-		Map<String, List<String>> setDiffs = new HashMap();
+		Map<String, List<String>> setDiffs = new HashMap<String, List<String>>();
 		List<Card> cardDiff = findCardDiffs(newCardData, oldCardData);
 		List<Card> oldCards = oldCardData.getCards();
 		List<String> oldCardsUuids = oldCardData.getUuids();
 		for(Card card : cardDiff) {
 			List<String> cardProps;
 			List<String> propChanges = new ArrayList<String>();
-			int foo = oldCardsUuids.lastIndexOf(card.uuid);
-			if(foo == -1) {
+			int index = oldCardsUuids.lastIndexOf(card.uuid);
+			if(index == -1) {
 				System.out.println("This code is jacked");
 			}else {
-				Card oldCard = oldCards.get(foo);
+				Card oldCard = oldCards.get(index);
 				cardProps = getPropertyNames(card.getClass());
 				for(String prop : cardProps) {
 					if(!hasPropChanged(card,oldCard,prop)) {
@@ -210,4 +213,25 @@ public class ComparisonUtils {
 	private static boolean nullEqualsCheck(Object a, Object b) {
 	    return (a == null) ? (b == null) : a.equals(b);
 	}
+	
+	public static List<Card> findNewCards(Data newData, Data oldData) {
+		List<String> newUuids = findNewUuids(newData.getUuids(), oldData.getUuids());
+		List<Card> newCards = new ArrayList<Card>();
+		for(Card card : newData.getCards()) {
+			if(newUuids.contains(card.uuid)) {
+				newCards.add(card);
+			}
+		}
+		return newCards;
+	}
+	
+	public static List<String> removeSetCards(List<String> newUuids, List<String> oldUuids){
+		Set<String> newUuidsList = new HashSet<String>(newUuids);
+		Set<String> oldUuidsList = new HashSet<String>(oldUuids);
+		
+		oldUuidsList.removeAll(newUuidsList);
+		return new ArrayList<>(oldUuidsList);
+		
+	}
+	
 }
