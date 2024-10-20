@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class ComparisonUtils {
 	/*
 	 * All methods inside this class are with the purpose of determining the differences in the
@@ -33,7 +31,7 @@ public class ComparisonUtils {
 		Set<Card> newSetList = new HashSet<Card>(newCardList);
 		Set<Card> oldSetList = new HashSet<Card>(oldCardList);
 		
-		newSetList.removeAll(oldCardList);
+		newSetList.removeAll(oldSetList);
 		return new ArrayList<>(newSetList);
 	}
 	

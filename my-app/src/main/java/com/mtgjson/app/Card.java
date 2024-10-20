@@ -13,7 +13,7 @@ public class Card {
 	List<String> colors = new ArrayList<String>();
 	
 	@JsonProperty("defense")
-	String defense = null;
+	String defense;
 	
 	@JsonProperty("identifiers")
 	Identifiers identifiers = new Identifiers();
@@ -121,7 +121,7 @@ public class Card {
 	}
 
 	public void setLeadershipSkills(LeadershipSkills leadershipSkills) {
-		leadershipSkills = leadershipSkills;
+		this.leadershipSkills = leadershipSkills;
 	}
 
 	public Legalities getLegalities() {
@@ -129,7 +129,7 @@ public class Card {
 	}
 
 	public void setLegalities(Legalities legalities) {
-		legalities = legalities;
+		this.legalities = legalities;
 	}
 
 	public String getLoyalty() {

@@ -9,7 +9,7 @@ import java.util.Map;
 import java.time.Duration;
 import java.time.Instant;
 
-
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class App {
@@ -61,6 +61,20 @@ public class App {
 		
 		File file = new File("output.json");
 		objectMapper.writerWithDefaultPrettyPrinter().writeValue(file,jsonDiffs);
+		try {
+            
+			for(String newfile : oldDir.list()) {
+				ObjectMapper map = new ObjectMapper();
+	            
+	            JsonNode jsonNode = map.readTree(new File(pathToOldDir + newfile));
+
+	            map.writerWithDefaultPrettyPrinter().writeValue(new File(pathToNewDir + newfile), jsonNode);
+
+	            System.out.println("JSON file has been pretty printed and saved.");
+			}         
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 		Instant end = Instant.now();
 		Duration time = Duration.between(start, end);
 		System.out.println("File written to: " + file.getAbsolutePath());
