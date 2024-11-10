@@ -1,6 +1,7 @@
 package com.mtgjson.app;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +10,6 @@ import java.util.Map;
 import java.time.Duration;
 import java.time.Instant;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class App {
@@ -23,6 +23,8 @@ public class App {
 		
 		File newDir = new File(pathToNewDir);
 		File oldDir = new File(pathToOldDir);
+		File insertSt = new File("insertmtg.sql");
+		FileWriter writer = new FileWriter(insertSt, true);
 		
 		diffs = ComparisonUtils.findNewSetFiles(newDir.list(), oldDir.list());
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -43,6 +45,11 @@ public class App {
 				List<String> removeCards = ComparisonUtils.removeSetCards(newSet.getData().getUuids(),oldSet.getData().getUuids());
 				if(!newCards.isEmpty()) {
 					jsonDiffs.addAdditions(file, newCards);
+					for(String uuid : newCards) {
+						Card card = newSet.getData().getCard(uuid);
+						String insrt = jsonDiffs.createInsert(card);
+						writer.write(insrt);
+					}
 				}
 				if(!removeCards.isEmpty()) {
 					jsonDiffs.addRemovals(file, removeCards);
@@ -52,6 +59,8 @@ public class App {
 				}
 				jsonDiff.put(file + " / " +oldSet.meta.getDate() + "->" + newSet.meta.getDate(), setDiffs);
 				jsonDiffs.addChanges(file, setDiffs);
+				
+				
 			}catch(FileNotFoundException e){
 				System.out.println("This file doesn't exist: " + e.getMessage());
 			}catch(IOException e) {
@@ -59,26 +68,14 @@ public class App {
 			}
 		}
 		
+		writer.close();
 		File file = new File("output.json");
 		objectMapper.writerWithDefaultPrettyPrinter().writeValue(file,jsonDiffs);
-		try {
-            
-			for(String newfile : oldDir.list()) {
-				ObjectMapper map = new ObjectMapper();
-	            
-	            JsonNode jsonNode = map.readTree(new File(pathToOldDir + newfile));
-
-	            map.writerWithDefaultPrettyPrinter().writeValue(new File(pathToNewDir + newfile), jsonNode);
-
-	            System.out.println("JSON file has been pretty printed and saved.");
-			}         
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 		Instant end = Instant.now();
 		Duration time = Duration.between(start, end);
 		System.out.println("File written to: " + file.getAbsolutePath());
 		System.out.println("Time for program execution: "+ time.toMillis());
+		
 	}
 	
 	

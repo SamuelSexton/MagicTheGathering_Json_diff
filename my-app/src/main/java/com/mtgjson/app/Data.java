@@ -36,6 +36,16 @@ public class Data {
 			this.uuids.add(card.uuid);
 		}
 	}
+	
+	public Card getCard(String uuid) {
+		for(Card card : cards) {
+			if(card.uuid.equals(uuid)) {
+				return card;
+			}
+		}
+		
+		throw new IllegalArgumentException("This set does not conatin card with uuid: " + uuid);
+	}
 
 	@Override
 	public int hashCode() {

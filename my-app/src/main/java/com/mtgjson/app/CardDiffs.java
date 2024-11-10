@@ -1,8 +1,17 @@
 package com.mtgjson.app;
 
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class CardDiffs {
 	
@@ -48,5 +57,26 @@ public class CardDiffs {
 		this.removals.put(file,remove);
 	}
 	
+	public String createInsert(Card card) {
+		List<String> fields = ComparisonUtils.getPropertyNames(card.getClass());
+		ObjectMapper mapper = new ObjectMapper();
+		String insertStm = "INSERT INTO (";
+		String values = "VALUES (";
+		try {
+			String jsonString = mapper.writeValueAsString(card);
+			JsonNode rootNode = mapper.readTree(jsonString);
+			for(String field : fields) {
+				insertStm += field + ",";
+				values += rootNode.findValues(field) + ",";
+			}
+			insertStm += ")";
+			values += ")";
+			insertStm += " " + values + ";\n";
+		}catch(IOException e) {
+			e.printStackTrace();;
+		}
+		
+		return insertStm;
+	}
 	
 }

@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ComparisonUtils {
 	/*
 	 * All methods inside this class are with the purpose of determining the differences in the
@@ -31,7 +33,7 @@ public class ComparisonUtils {
 		Set<Card> newSetList = new HashSet<Card>(newCardList);
 		Set<Card> oldSetList = new HashSet<Card>(oldCardList);
 		
-		newSetList.removeAll(oldSetList);
+		newSetList.removeAll(oldCardList);
 		return new ArrayList<>(newSetList);
 	}
 	
@@ -125,23 +127,95 @@ public class ComparisonUtils {
 	    boolean propBool;
 
 	    switch (prop) {
+	    	case "artist":
+	    		propBool = nullEqualsCheck(newCard.artist, oldCard.artist);
+	    		break;
+	    	case "artistIds":
+	    		propBool = nullEqualsCheck(newCard.artistIds, oldCard.artistIds);
+	    		break;
+	    	case "asciiName":
+	    		propBool = nullEqualsCheck(newCard.asciiName, oldCard.asciiName);
+	    		break;
+	    	case "availability":
+	    		propBool = nullEqualsCheck(newCard.availability, oldCard.availability);
+	    		break;
 	        case "colors":
 	            propBool = nullEqualsCheck(newCard.colors, oldCard.colors);
 	            break;
 	        case "defense":
 	            propBool = nullEqualsCheck(newCard.defense, oldCard.defense);
 	            break;
+	        case "faceManaValue":
+	        	propBool = newCard.faceManaValue == oldCard.faceManaValue;
+	            break;
+	        case "faceName":
+	        	propBool = nullEqualsCheck(newCard.faceName, oldCard.faceName);
+	            break;
+	        case "frameVersion":
+	        	propBool = nullEqualsCheck(newCard.frameVersion, oldCard.frameVersion);
+	            break;
+	        case "hand":
+	        	propBool = nullEqualsCheck(newCard.hand, oldCard.hand);
+	            break;
+	        case "hasAlternativeDeckLimit":
+	        	propBool = nullEqualsCheck(newCard.hasAlternativeDeckLimit, oldCard.hasAlternativeDeckLimit);
+	            break;
+	        case "hasContentWarning":
+	        	propBool = nullEqualsCheck(newCard.hasContentWarning, oldCard.hasContentWarning);
+	            break;
 	        case "identifiers":
 	            propBool = nullEqualsCheck(newCard.identifiers, oldCard.identifiers);
 	            break;
+	        case "isAlternative":
+	        	propBool = nullEqualsCheck(newCard.isAlternative, oldCard.isAlternative);
+	            break;
+	        case "isFullArt":
+	        	propBool = nullEqualsCheck(newCard.isFullArt, oldCard.isFullArt);
+	            break;
+	        case "isFunny":
+	        	propBool = nullEqualsCheck(newCard.isFunny, oldCard.isFunny);
+	            break;
+	        case "isOnlineOnly":
+	        	propBool = nullEqualsCheck(newCard.isOnlineOnly, oldCard.isOnlineOnly);
+	            break;
+	        case "isOversized":
+	        	propBool = nullEqualsCheck(newCard.isOversized, oldCard.isOversized);
+	            break;
+	        case "isPromo":
+	        	propBool = nullEqualsCheck(newCard.isPromo, oldCard.isPromo);
+	            break;
+	        case "isRebalanced":
+	        	propBool = nullEqualsCheck(newCard.isRebalanced, oldCard.isRebalanced);
+	            break;
+	        case "isReprint":
+	        	propBool = nullEqualsCheck(newCard.isReprint, oldCard.isReprint);
+	            break;
+	        case "isReserved":
+	        	propBool = nullEqualsCheck(newCard.isReserved, oldCard.isReserved);
+	            break;
+	        case "isStorySpotlight":
+	        	propBool = nullEqualsCheck(newCard.isStorySpotlight, oldCard.isStorySpotlight);
+	            break;
+	        case "isTextless":
+	        	propBool = nullEqualsCheck(newCard.isTextless, oldCard.isTextless);
+	            break;
+	        case "isTimeshifted":
+	        	propBool = nullEqualsCheck(newCard.isTimeshifted, oldCard.isTimeshifted);
+	            break;
 	        case "keywords":
 	            propBool = nullEqualsCheck(newCard.keywords, oldCard.keywords);
+	            break;
+	        case "layout":
+	        	propBool = nullEqualsCheck(newCard.layout, oldCard.layout);
 	            break;
 	        case "leadershipSkills":
 	            propBool = nullEqualsCheck(newCard.leadershipSkills, oldCard.leadershipSkills);
 	            break;
 	        case "legalities":
 	            propBool = nullEqualsCheck(newCard.legalities, oldCard.legalities);
+	            break;
+	        case "life":
+	        	propBool = nullEqualsCheck(newCard.life, oldCard.life);
 	            break;
 	        case "loyalty":
 	            propBool = nullEqualsCheck(newCard.loyalty, oldCard.loyalty);
@@ -155,14 +229,32 @@ public class ComparisonUtils {
 	        case "name":
 	            propBool = nullEqualsCheck(newCard.name, oldCard.name);
 	            break;
+	        case "number":
+	        	propBool = nullEqualsCheck(newCard.number, oldCard.number);
+	            break;
+	        case "originalPrintings":
+	        	propBool = nullEqualsCheck(newCard.originalPrintings, oldCard.originalPrintings);
+	            break;
+	        case "originalReleaseDate":
+	        	propBool = nullEqualsCheck(newCard.originalReleaseDate, oldCard.originalReleaseDate);
+	            break;
 	        case "originalText":
 	            propBool = nullEqualsCheck(newCard.originalText, oldCard.originalText);
 	            break;
 	        case "originalType":
 	            propBool = nullEqualsCheck(newCard.originalType, oldCard.originalType);
 	            break;
+	        case "otherFaceIds":
+	        	propBool = nullEqualsCheck(newCard.otherFaceIds, oldCard.otherFaceIds);
+	            break;
 	        case "power":
 	            propBool = nullEqualsCheck(newCard.power, oldCard.power);
+	            break;
+	        case "printings":
+	        	propBool = nullEqualsCheck(newCard.printings, oldCard.printings);
+	            break;
+	        case "promoTypes":
+	        	propBool = nullEqualsCheck(newCard.promoTypes, oldCard.promoTypes);
 	            break;
 	        case "purchaseUrls":
 	            propBool = nullEqualsCheck(newCard.purchaseUrls, oldCard.purchaseUrls);
@@ -173,11 +265,17 @@ public class ComparisonUtils {
 	        case "rulings":
 	            propBool = nullEqualsCheck(newCard.rulings, oldCard.rulings);
 	            break;
+	        case "securityStamp":
+	        	propBool = nullEqualsCheck(newCard.securityStamp, oldCard.securityStamp);
+	            break;
 	        case "setCode":
 	            propBool = nullEqualsCheck(newCard.setCode, oldCard.setCode);
 	            break;
 	        case "side":
 	            propBool = nullEqualsCheck(newCard.side, oldCard.side);
+	            break;
+	        case "signature":
+	        	propBool = nullEqualsCheck(newCard.signature, oldCard.signature);
 	            break;
 	        case "subTypes":
 	            propBool = nullEqualsCheck(newCard.subTypes, oldCard.subTypes);
@@ -230,6 +328,14 @@ public class ComparisonUtils {
 		oldUuidsList.removeAll(newUuidsList);
 		return new ArrayList<>(oldUuidsList);
 		
+	}
+	
+	public static List<String> createPrintings(String[] files) {
+		List<String> printings = new ArrayList<String>();
+		for(String printing : files) {
+			printings.add(printing.replace(".json", ""));
+		}
+		return printings;
 	}
 	
 }
